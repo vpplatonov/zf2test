@@ -1,0 +1,36 @@
+
+Технологии: PHP 5.5, Zend Framework 2, MySQL, Doctrine 2 ORM, Javasciprt, Twitter Bootstrap. 
+ 
+Требования: 
+Регистрация пользователей /user/register
+Авторизация пользователей /user/login
+
+Редактирование профиля /user/edit
+
+Добавление твитов ( on all /twitter/* look pages : see below )
+Отображение списка твитов пользователя /twitter/currusertwitts
+Отображение списка твитов всех пользователей за последние 24 часа "/twitter/last24hourstwitts"
+Возможность follow-ить других пользователей "/"
+Просмотр списка follower-ов "/user"
+Просмотр твиттов follower-ов "/twitter/followtwitts"
+
+Поиск по твитам ( Zend Lucene ) "/twitter/search/search"
+- Index Generation "/twitter/search/generate"
+
+Технические Требования: 
+Использовать PHP 5.5 и максимально следовать принципам ООП. 
+В качестве автозагрузчика необходимо использовать Composer Autoloader. 
+Весь функционал должен быть реализован в виде REST API. 
+Код должен удовлетворять стандартам кодирования PSR-2. 
+Обязательно код (классы и методы) должен иметь комментарии в стиле PHPDoc. 
+Необходимо соблюдать принцип IoC (управление зависимостями). 
+Необходимо предоставить инструкцию (установка/настройка) в Readme.md файле. 
+Полезные материалы: 
+https://getcomposer.org/doc/01-basic-usage.md#autoloading 
+https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md 
+https://en.wikipedia.org/wiki/PHPDoc 
+https://en.wikipedia.org/wiki/Inversion_of_control 
+https://en.wikipedia.org/wiki/Representational_state_transfer
+
+Run test from module/Application/test
+./../../../vendor/bin/phpunit ApplicationTest/Controller/TwitterRestfullControllerTest.php

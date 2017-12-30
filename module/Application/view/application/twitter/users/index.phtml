@@ -1,0 +1,83 @@
+
+<div class="row">
+
+<?php
+$getters = array();
+foreach ($this->userlistElements as $element) {
+    $parts = explode('_', $element);
+    array_walk($parts, function (&$val) {
+        $val = ucfirst($val);
+    });
+    $getters[$element] = 'get' . implode('', $parts);
+}
+?>
+
+<h1><?php echo $this->translate($h1) ?></h1>
+
+<table class="table">
+    <thead>
+        <tr>
+          <?php foreach ($this->userlistElements as $element) : ?>
+                <th><?php print $this->translate(str_replace('_', ' ' , ucfirst($element))); ?></th>
+          <?php endforeach;?>
+           <th><?php print $this->translate('Twitts published');?></th>
+           <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->twitts as $key => $twitt ): ?>
+    <tr id="user-<?php print $twitt[0]->getUserid();?>">
+        <?php foreach ($this->userlistElements as $element) : ?>
+            <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
+
+            <?php echo call_user_func(array($twitt[0], $getters[$element])); ?>
+            </td>
+        <?php endforeach;?>
+
+        <td class="cell"><?php print $twitt['numTwitts']; ?></td>
+
+      	<td class="cell"><a href="#" class="toggle"  data="<?php print $this->url('twitter/ajax_query',
+            array('action'=>'follow', 'controller'=> 'index','uid' => $twitt[0]->getUserid()));?>">
+            <?php print  $this->translate('unfollow') ;?>
+  		</a></td>
+
+		<?php $parts = explode('_', $element); ?>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="<?php echo count($this->twitts) + 1; ?>">
+            <?php echo $this->paginationControl($this->twitts, 'Sliding', 'application/twitter/pagination_list.phtml',array('route' => $route)); ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+
+<?php
+$script = $this->inlineScript();
+$script->appendScript(<<<'EOT'
+
+$("a.toggle").toggleClass( "follow" ).click(function() {
+        var $element = $(this), active_class;
+        if ($element.toggleClass( "follow" ).hasClass('follow')) { active_class = 'follow' } else {active_class = 'unfollow'};
+
+        $.ajax({
+          method: "POST",
+          url: $(this).attr('data'),
+          data: {uid:active_class},
+          dataType: 'json'
+        })
+        .done(function(response,status) {
+            if (status = "success") {
+                $element.html(active_class);
+                $('tr#user-' + response.uid).remove();
+            }
+        });
+
+  return false;
+});
+
+EOT
+);

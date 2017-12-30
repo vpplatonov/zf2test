@@ -1,0 +1,39 @@
+<?php
+/**
+ * Search page
+ */
+?>
+<h3><?php print $this->translate('Twitter Search'); ?></h3>
+
+<?php echo $this->form()->openTag($form) ?>
+	<?php foreach ($form as $element): ?>
+<?php echo $this->formElement($element); echo $this->formElementErrors($element); ?>
+    <?php endforeach ?>
+<?php echo $this->form()->closeTag() ?>
+	<a href="<?php echo $this->url('twitter/generate'); ?>"><?php echo $this->translate('Regenerate Search Index!'); ?></a>
+<?php if (!empty($searchResults)) : ?>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><?php print $this->translate('Title'); ?></th>
+            <th><?php print $this->translate('Message'); ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+	<?php foreach ($searchResults as $searchResult) : ?>
+    <tr class="cell cell-<?php echo $searchResult->twitt_id; ?>">
+        <?php if($searchResult->twitt_author == $this->identity()->getUserId()) : ?>
+        <td><a href="<?php echo $this->escapeHTML($this->url('twitter/edit',array('action' => 'edit', 'id' => $searchResult->twitt_id))); ?>">
+        		<?php echo $searchResult->twitt_title; ?></a></td>
+        <?php else :?>
+        <td><?php echo $searchResult->twitt_title; ?></td>
+        <?php endif; ?>
+        <td><?php echo $searchResult->twitt_message; ?></td>
+        <td>&nbsp;</td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif;?>

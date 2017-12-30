@@ -1,0 +1,23 @@
+<?php
+$form = $this->editBackofficeForm;
+$form->prepare();
+if (strpos($this->action,'create') === false) {
+    $form->setAttribute('action', $this->url($this->action, array('id' => $this->id)));
+} else {
+    $form->setAttribute('action', $this->url($this->action));
+}
+
+//$form->setAttribute('method', 'post');
+?>
+
+<h1><?php print (strpos($this->action,'create') === false ? $this->translate('Edit') : $this->translate('Create')); ?> <?php print $this->translate($h1); ?></h1>
+
+<?php include '_form.phtml'; ?>
+
+<?php if (strpos($this->action,'create') === false) : ?>
+<a href="<?php echo $this->url($route . '/remove', array('id' => $this->id)); ?>"
+   onclick="return confirm('<?php echo $this->translate('Really delete ' . $h1 .'?') ?>')">
+    <?php echo $this->translate('Delete') ?>
+</a>
+<?php endif; ?>
+

@@ -1,0 +1,106 @@
+
+<div class="row">
+
+<?php
+$getters = array();
+foreach ($this->userlistElements as $element) {
+    $parts = explode('_', $element);
+    array_walk($parts, function (&$val) {
+        $val = ucfirst($val);
+    });
+    $getters[$element] = 'get' . implode('', $parts);
+}
+?>
+
+<h1><?php echo $this->translate($h1) ?></h1>
+
+<div class="navbar filter-bar">
+    <div class="navbar-inner">
+        <div class="pull-right">
+            <a href="<?php echo $this->url($route . '/create'); ?>" class="btn btn-primary">
+                <?php echo $this->translate('Add New Twitt'); ?>
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+          <?php foreach ($this->userlistElements as $element) : ?>
+                <th><?php print $this->translate(str_replace('_', ' ' , ucfirst($element))); ?></th>
+          <?php endforeach;?>
+           <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->twitts as $key => $twitt ): ?>
+    <tr>
+      <?php foreach ($this->userlistElements as $element) : ?>
+        <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
+
+        <?php echo call_user_func(array($twitt[0], $getters[$element])); ?>
+        </td>
+      <?php endforeach;?>
+
+      <?php $parts = explode('_', $element); ?>
+	  <?php if($twitt[0]->getUserUser()->getUserId() != $this->identity()->getUserId()) : ?>
+      	<td><a href="#" class="toggle <?php print ($twitt['isFollow'] == -1 ? 'f' : 'uf') ;?>"
+      	       data="<?php print  $this->url('twitter/ajax_query',
+            array('action'=>'follow', 'controller'=> 'index','uid' => $twitt[0]->getUserUser()->getUserid()));?>">
+            <?php print ($twitt['isFollow'] == -1 ? $this->translate('follow') : $this->translate('unfollow')) ;?>
+  		</a></td>
+	  <?php else :?>
+     	<td class="cell cell-ctrls">
+            <a href="<?php echo $this->url($route . '/edit', array('id' => call_user_func(array($twitt[0], 'get' . $id)))); ?>">
+                <?php echo $this->translate('Edit') ?>
+            </a>
+            |
+            <a href="<?php echo $this->url($route . '/remove', array("id" => call_user_func(array($twitt[0], 'get' . $id)))); ?>"
+               onclick="return confirm('<?php echo $this->translate('Really delete ' .$h1 .' ?') ?>')">
+                <?php echo $this->translate('Delete') ?>
+            </a>
+      	</td>
+      	<?php endif; ?>
+
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="<?php echo count($this->twitts) + 1; ?>">
+            <?php echo $this->paginationControl($this->twitts, 'Sliding', 'application/twitter/pagination_list.phtml',array('route' => $route)); ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+
+<?php
+$script = $this->inlineScript();
+$script->appendScript(<<<'EOT'
+
+$("a.toggle.f").toggleClass( "follow" ).click(toggleHandler);
+$("a.toggle.uf").toggleClass( "unfollow" ).click(toggleHandler);
+
+function toggleHandler() {
+
+        var $element = $(this), active_class;
+        if ($element.toggleClass( "follow" ).hasClass('follow')) { active_class = 'unfollow' } else {active_class = 'follow'};
+
+        $.ajax({
+          method: "POST",
+          url: $(this).attr('data'),
+          data: {uid:active_class},
+          dataType: 'json'
+        }).done(function(response,status) {
+            if (status = "success") {
+                $element.html(response.param);
+            }
+        });
+
+  return false;
+};
+
+EOT
+);

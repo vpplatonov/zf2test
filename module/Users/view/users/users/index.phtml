@@ -1,0 +1,31 @@
+ <?php
+ $title = 'Registerd Users';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('user', array('action'=>'add'));?>">Add new user</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>User</th>
+     <th>uid</th>
+     <th>emial</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($users as $user) : ?>
+     <?php if ($user->uid == 0) continue; ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($user->name);?></td>
+     <td><?php echo $this->escapeHtml($user->uid);?></td>
+     <td><?php echo $this->escapeHtml($user->mail);?></td>
+     <td>
+         <a href="<?php echo $this->url('user',
+             array('action'=>'edit', 'id' => $user->uid));?>">Edit</a>
+         <a href="<?php echo $this->url('user',
+             array('action'=>'delete', 'id' => $user->uid));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

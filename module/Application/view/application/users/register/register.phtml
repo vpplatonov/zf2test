@@ -1,0 +1,54 @@
+<?php
+/**
+ *
+ */
+?>
+<section class="register">
+ <h2>Register</h2>
+ <?php if ( $this->error): ?>
+ <p class="error">
+   Please correct the form.
+ </p>
+ <?php endif;?>
+
+ <?php
+ $form = $this->form;
+ $form->prepare();
+ $form->setAttribute('action',$this->url('user/process',array('controller' =>'UsersController', 'action' => 'process')));
+ $form->setAttribute('method', 'post');
+ echo $this->form()->openTag($form);
+ ?>
+
+<dl class='znd_form'>
+<dt><?php echo $this->formLabel($form->get('username'));?>
+<dd><?php
+   echo $this->formElement($form->get('username'));
+   echo $this->formElementErrors($form->get('username'));
+?></dd>
+</dt>
+<dt><?php echo $this->formLabel($form->get('email'));?>
+<dd><?php
+   echo $this->formElement($form->get('email'));
+   echo $this->formElementErrors($form->get('email'));
+?></dd>
+</dt>
+<dt><?php echo $this->formLabel($form->get('password'));?>
+<dd><?php
+   echo $this->formElement($form->get('password'));
+   echo $this->formElementErrors($form->get('password'));
+?></dd>
+</dt>
+<dt><?php echo $this->formLabel($form->get('confirm_password'));?>
+<dd><?php
+   echo $this->formElement($form->get('confirm_password'));
+   echo $this->formElementErrors($form->get('confirm_password'));
+?></dd>
+</dt>
+<dd><?php
+   echo $this->formElement($form->get('submit'));
+   echo $this->formElementErrors($form->get('submit'));
+?></dd>
+</dl>
+
+ <?php echo $this->form()->closeTag($form); ?>
+</section>
